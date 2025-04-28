@@ -1,165 +1,810 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Концерт Макса Коржа в Катовице</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <title>EULUX - Premium Car Rental & Sales in Europe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f9ff;
-            color: #333;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
-
-        .container {
-            width: 80%;
-            margin: auto;
+        .car-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        header, footer {
-            background-color: #f8f8f8;
-            padding: 20px;
+        .language-dropdown:hover .language-options {
+            display: block;
+        }
+        .language-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #loading {
+            display: none;
             text-align: center;
+            padding: 2rem;
         }
-
-        .content {
-            padding: 20px;
-        }
-
-        .event-info, .ticket-info, .description {
-            margin-bottom: 20px;
-            font-weight: bold; /* Сделано жирным */
-        }
-
-        .buy-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
+        #noResults {
+            display: none;
             text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            display: inline-block;
+            padding: 2rem;
+            color: #e3342f;
         }
-
-        .reviews-section {
-            background-color: #ffffff;
-            padding: 40px 20px;
-            text-align: center;
-            border-top: 5px solid #4CAF50;
-            margin-top: 20px;
+        .sticky-search {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
         }
-
-        .reviews-section h2 {
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 30px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
+        .car-card {
+            animation: fadeIn 0.5s ease-in;
         }
-
-        .reviews-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            justify-items: center;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .review {
-            background-color: #ffffff;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            padding: 25px;
-            max-width: 450px;
-            text-align: left;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            font-family: 'Roboto', sans-serif;
-            font-weight: bold; /* Сделано жирным */
+        .carousel {
+            overflow: hidden;
+            position: relative;
         }
-
-        .review:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
         }
-
-        .review-text {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 15px;
-            font-style: italic;
-            line-height: 1.5;
+        .carousel-item {
+            min-width: 100%;
         }
-
-        .review-author {
-            font-size: 1rem;
-            color: #4CAF50;
-            text-align: right;
-            font-weight: bold;
-        }
-
-        footer p {
-            font-size: 1rem;
-            color: #333;
-            font-weight: bold; /* Сделано жирным */
+        .price-slider {
+            width: 100%;
+            margin: 1rem 0;
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Концерт Макса Коржа в Катовице</h1>
+<body class="bg-white text-gray-900">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="flex items-center">
+                <div class="text-2xl font-bold text-blue-700">EULUX</div>
+            </div>
+            <nav class="flex items-center space-x-8">
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Home</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Cars</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Locations</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Contact</a></li>
+                </ul>
+                <!-- Language Switcher -->
+                <div class="relative language-dropdown">
+                    <button id="languageBtn" class="flex items-center text-gray-600 hover:text-blue-700 font-medium">
+                        <span id="currentLang">EN</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="language-options">
+                        <button onclick="switchLanguage('en')" class="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-700">English</button>
+                        <button onclick="switchLanguage('ru')" class="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-700">Русский</button>
+                    </div>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
-        <div class="content">
-            <div class="event-info">
-                <h2>Информация о концерте</h2>
-                <p><strong>Место проведения:</strong> Spodek, Катовице</p>
-                <p><strong>Адрес:</strong> Al. Korfantego 35, 40-005 Katowice, Польша</p>
-                <p><strong>Дата и время:</strong> 5 февраля 2025, 19:00</p>
+    <!-- Featured Cars Carousel -->
+    <section class="container mx-auto py-8 px-4">
+        <h2 class="text-2xl font-semibold mb-6">Featured Vehicles</h2>
+        <div class="carousel">
+            <div class="carousel-inner" id="carouselInner">
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1541443131876-44b03de101c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Porsche 911" class="w-full h-64 object-cover rounded-lg">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-semibold">Porsche 911</h3>
+                        <p class="text-gray-500">€150/day or €120,000</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Tesla Model S" class="w-full h-64 object-cover rounded-lg">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-semibold">Tesla Model S</h3>
+                        <p class="text-gray-500">€90/day or €70,000</p>
+                    </div>
+                </div>
             </div>
+            <button onclick="moveCarousel(-1)" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-blue-700 text-white p-2 rounded-full hover:bg-blue-800">←</button>
+            <button onclick="moveCarousel(1)" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-blue-700 text-white p-2 rounded-full hover:bg-blue-800">→</button>
+        </div>
+    </section>
 
-            <div class="description">
-                <h2>О концерте</h2>
-                <p>Макс Корж — один из самых популярных исполнителей СНГ, чьи концерты собирают стадионы. Энергетика, тексты, которые попадают прямо в сердце, и тысячи фанатов в одном зале!</p>
+    <!-- Search Filters -->
+    <section class="container mx-auto px-4 sticky-search">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-6">Search Vehicles</h2>
+            <div class="grid grid-cols-1 md:grid-cols-8 gap-4">
+                <select id="transaction" class="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="rent">Rent</option>
+                    <option value="buy">Buy</option>
+                </select>
+                <select id="brand" onchange="updateModels()" class="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="">Select Brand</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Audi">Audi</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Porsche">Porsche</option>
+                    <option value="Renault">Renault</option>
+                    <option value="Peugeot">Peugeot</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Tesla">Tesla</option>
+                </select>
+                <select id="model" class="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="">Select Model</option>
+                </select>
+                <select id="vehicleType" class="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="">Vehicle Type</option>
+                    <option value="sedan">Sedan</option>
+                    <option value="suv">SUV</option>
+                    <option value="hatchback">Hatchback</option>
+                    <option value="coupe">Coupe</option>
+                    <option value="convertible">Convertible</option>
+                    <option value="electric">Electric</option>
+                </select>
+                <select id="fuel" class="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="">Fuel Type</option>
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>Hybrid</option>
+                    <option>Electric</option>
+                </select>
+                <input id="priceRange" type="range" min="0" max="200" step="5" value="200" class="price-slider">
+                <select id="sortBy" class="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="year-desc">Year: Newest</option>
+                </select>
+                <div class="flex space-x-2">
+                    <button onclick="searchCars()" class="bg-blue-700 text-white p-3 rounded-lg hover:bg-blue-800 transition">Search</button>
+                    <button onclick="resetFilters()" class="bg-gray-200 text-gray-800 p-3 rounded-lg hover:bg-gray-300 transition">Reset</button>
+                </div>
             </div>
+            <p id="priceRangeValue" class="text-sm text-gray-500 mt-2">Price Range: €0 - €200/day</p>
+        </div>
+    </section>
 
-            <div class="ticket-info">
-                <h2>Билеты</h2>
-                <p><strong>Цена билета:</strong> от 200 PLN</p>
-                <a href="payment.html" class="buy-button">Купить билет</a>
+    <!-- Car Listings -->
+    <section class="container mx-auto py-12 px-4">
+        <h2 class="text-2xl font-semibold mb-8">Available Vehicles</h2>
+        <button onclick="openComparisonModal()" class="mb-4 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition hidden" id="compareButton">Compare Selected (0)</button>
+        <div id="loading">Loading...</div>
+        <div id="noResults">No vehicles match your criteria.</div>
+        <div id="carListings" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- BMW 3 Series E21 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series E21" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="40" data-buy-price="15000" data-year="1977">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series E21">
+                <img src="https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series E21 1977 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series E21</h3>
+                    <p class="text-gray-500 text-sm mt-1">1977 | Manual | Petrol | 98 hp | Sedan | 100,000 km | Gen: E21</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€40 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€15,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series E21', '40', '15000', 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '1977 | Manual | Petrol | 98 hp | Sedan | 100,000 km | Gen: E21')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW 3 Series E30 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series E30" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="50" data-buy-price="25000" data-year="1985">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series E30">
+                <img src="https://images.unsplash.com/photo-1592853625522-7c8cc4122957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series E30 1985 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series E30</h3>
+                    <p class="text-gray-500 text-sm mt-1">1985 | Manual | Petrol | 125 hp | Sedan | 80,000 km | Gen: E30</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€50 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€25,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series E30', '50', '25000', 'https://images.unsplash.com/photo-1592853625522-7c8cc4122957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '1985 | Manual | Petrol | 125 hp | Sedan | 80,000 km | Gen: E30')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW 3 Series E36 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series E36" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="55" data-buy-price="30000" data-year="1995">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series E36">
+                <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series E36 1995 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series E36</h3>
+                    <p class="text-gray-500 text-sm mt-1">1995 | Automatic | Petrol | 150 hp | Sedan | 70,000 km | Gen: E36</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€55 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€30,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series E36', '55', '30000', 'https://images.unsplash.com/photo-1550355291-bbee04a92027?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '1995 | Automatic | Petrol | 150 hp | Sedan | 70,000 km | Gen: E36')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW 3 Series E46 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series E46" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="60" data-buy-price="35000" data-year="2003">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series E46">
+                <img src="https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series E46 2003 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series E46</h3>
+                    <p class="text-gray-500 text-sm mt-1">2003 | Automatic | Petrol | 184 hp | Sedan | 60,000 km | Gen: E46</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€60 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€35,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series E46', '60', '35000', 'https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2003 | Automatic | Petrol | 184 hp | Sedan | 60,000 km | Gen: E46')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW 3 Series E90 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series E90" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="65" data-buy-price="40000" data-year="2010">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series E90">
+                <img src="https://images.unsplash.com/photo-1580274455199-7edaa607483b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series E90 2010 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series E90</h3>
+                    <p class="text-gray-500 text-sm mt-1">2010 | Automatic | Petrol | 218 hp | Sedan | 50,000 km | Gen: E90</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€65 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€40,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series E90', '65', '40000', 'https://images.unsplash.com/photo-1580274455199-7edaa607483b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2010 | Automatic | Petrol | 218 hp | Sedan | 50,000 km | Gen: E90')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW 3 Series F30 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series F30" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="70" data-buy-price="45000" data-year="2016">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series F30">
+                <img src="https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series F30 2016 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series F30</h3>
+                    <p class="text-gray-500 text-sm mt-1">2016 | Automatic | Petrol | 252 hp | Sedan | 40,000 km | Gen: F30</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€70 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€45,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series F30', '70', '45000', 'https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2016 | Automatic | Petrol | 252 hp | Sedan | 40,000 km | Gen: F30')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW 3 Series G20 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="3 Series G20" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="80" data-buy-price="50000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW 3 Series G20">
+                <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW 3 Series G20 2023 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW 3 Series G20</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Petrol | 255 hp | Sedan | 10,000 km | Gen: G20</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€80 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€50,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW 3 Series G20', '80', '50000', 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Petrol | 255 hp | Sedan | 10,000 km | Gen: G20')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW X3 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="X3" data-vehicle-type="suv" data-fuel="Diesel" data-rent-price="75" data-buy-price="55000" data-year="2022">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW X3">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW X3 2022 SUV" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW X3</h3>
+                    <p class="text-gray-500 text-sm mt-1">2022 | Automatic | Diesel | 190 hp | SUV | 20,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€75 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€55,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW X3', '75', '55000', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2022 | Automatic | Diesel | 190 hp | SUV | 20,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- BMW M3 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="BMW" data-model="M3" data-vehicle-type="sedan" data-fuel="Petrol" data-rent-price="120" data-buy-price="90000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="BMW M3">
+                <img src="https://images.unsplash.com/photo-1592853625522-7c8cc4122957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="BMW M3 2023 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">BMW M3</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Petrol | 510 hp | Sedan | 5,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€120 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€90,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('BMW M3', '120', '90000', 'https://images.unsplash.com/photo-1592853625522-7c8cc4122957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Petrol | 510 hp | Sedan | 5,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Audi A4 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Audi" data-model="A4" data-vehicle-type="sedan" data-fuel="Diesel" data-rent-price="45" data-buy-price="32000" data-year="2022">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Audi A4">
+                <img src="https://images.unsplash.com/photo-1541348263662-e068662d82af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Audi A4 2022 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Audi A4</h3>
+                    <p class="text-gray-500 text-sm mt-1">2022 | Automatic | Diesel | 190 hp | Sedan | 20,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€45 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€32,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Audi A4', '45', '32000', 'https://images.unsplash.com/photo-1541348263662-e068662d82af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2022 | Automatic | Diesel | 190 hp | Sedan | 20,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Audi Q5 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Audi" data-model="Q5" data-vehicle-type="suv" data-fuel="Petrol" data-rent-price="70" data-buy-price="50000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Audi Q5">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Audi Q5 2023 SUV" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Audi Q5</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Petrol | 265 hp | SUV | 10,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€70 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€50,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Audi Q5', '70', '50000', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Petrol | 265 hp | SUV | 10,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Mercedes C-Class -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Mercedes" data-model="C-Class" data-vehicle-type="sedan" data-fuel="Hybrid" data-rent-price="60" data-buy-price="40000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Mercedes C-Class">
+                <img src="https://images.unsplash.com/photo-1580274455199-7edaa607483b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mercedes C-Class 2023 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Mercedes C-Class</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Hybrid | 204 hp | Sedan | 15,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€60 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€40,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Mercedes C-Class', '60', '40000', 'https://images.unsplash.com/photo-1580274455199-7edaa607483b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Hybrid | 204 hp | Sedan | 15,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Mercedes GLC -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Mercedes" data-model="GLC" data-vehicle-type="suv" data-fuel="Petrol" data-rent-price="80" data-buy-price="60000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Mercedes GLC">
+                <img src="https://images.unsplash.com/photo-1593941707882-a5b74b1c4edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mercedes GLC 2023 SUV" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Mercedes GLC</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Petrol | 258 hp | SUV | 10,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€80 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€60,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Mercedes GLC', '80', '60000', 'https://images.unsplash.com/photo-1593941707882-a5b74b1c4edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Petrol | 258 hp | SUV | 10,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Volkswagen Golf -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Volkswagen" data-model="Golf" data-vehicle-type="hatchback" data-fuel="Petrol" data-rent-price="35" data-buy-price="25000" data-year="2022">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Volkswagen Golf">
+                <img src="https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Volkswagen Golf 2022 Hatchback" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Volkswagen Golf</h3>
+                    <p class="text-gray-500 text-sm mt-1">2022 | Manual | Petrol | 130 hp | Hatchback | 25,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€35 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€25,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Volkswagen Golf', '35', '25000', 'https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2022 | Manual | Petrol | 130 hp | Hatchback | 25,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Toyota Corolla -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Toyota" data-model="Corolla" data-vehicle-type="sedan" data-fuel="Hybrid" data-rent-price="40" data-buy-price="28000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Toyota Corolla">
+                <img src="https://images.unsplash.com/photo-1593941707882-a5b74b1c4edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Toyota Corolla 2023 Sedan" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Toyota Corolla</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Hybrid | 122 hp | Sedan | 20,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€40 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€28,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Toyota Corolla', '40', '28000', 'https://images.unsplash.com/photo-1593941707882-a5b74b1c4edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Hybrid | 122 hp | Sedan | 20,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Porsche 911 -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Porsche" data-model="911" data-vehicle-type="coupe" data-fuel="Petrol" data-rent-price="150" data-buy-price="120000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Porsche 911">
+                <img src="https://images.unsplash.com/photo-1541443131876-44b03de101c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Porsche 911 2023 Coupe" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Porsche 911</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Petrol | 450 hp | Coupe | 5,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€150 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€120,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Porsche 911', '150', '120000', 'https://images.unsplash.com/photo-1541443131876-44b03de101c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Petrol | 450 hp | Coupe | 5,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Tesla Model S -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Tesla" data-model="Model S" data-vehicle-type="electric" data-fuel="Electric" data-rent-price="90" data-buy-price="70000" data-year="2023">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Tesla Model S">
+                <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tesla Model S 2023 Electric" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Tesla Model S</h3>
+                    <p class="text-gray-500 text-sm mt-1">2023 | Automatic | Electric | 670 hp | Sedan | 10,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€90 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€70,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Tesla Model S', '90', '70000', 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2023 | Automatic | Electric | 670 hp | Sedan | 10,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
+            </div>
+            <!-- Renault Captur -->
+            <div class="bg-white rounded-lg shadow-md car-card overflow-hidden" data-brand="Renault" data-model="Captur" data-vehicle-type="suv" data-fuel="Petrol" data-rent-price="30" data-buy-price="20000" data-year="2022">
+                <input type="checkbox" onchange="updateCompareButton()" class="absolute top-4 right-4 compare-checkbox" data-car="Renault Captur">
+                <img src="https://images.unsplash.com/photo-1593941707882-a5b74b1c4edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Renault Captur 2022 SUV" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Renault Captur</h3>
+                    <p class="text-gray-500 text-sm mt-1">2022 | Manual | Petrol | 140 hp | SUV | 30,000 km</p>
+                    <div class="mt-4">
+                        <p class="text-2xl font-bold text-blue-700 rent-price">€30 <span class="text-base font-normal">/day</span></p>
+                        <p class="text-2xl font-bold text-blue-700 buy-price hidden">€20,000</p>
+                        <p class="text-sm text-gray-400">incl. 19% VAT</p>
+                    </div>
+                    <button onclick="openModal('Renault Captur', '30', '20000', 'https://images.unsplash.com/photo-1593941707882-a5b74b1c4edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '2022 | Manual | Petrol | 140 hp | SUV | 30,000 km')" class="mt-4 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">Rent/Buy Now</button>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Раздел отзывов -->
-        <div class="reviews-section">
-            <h2>Отзывы зрителей</h2>
-<div class="reviews-container">
-<div class="review">
-                    <p class="review-text">"Макс просто разорвал сцену! Эмоции зашкаливают, голос охрип от песен!"</p>
-                    <p class="review-author">— Michał, Варшава</p>
-                </div>
-                <div class="review">
-                    <p class="review-text">"Это было нечто! Атмосфера, свет, звук — всё идеально!"</p>
-                    <p class="review-author">— Karolina, Краков</p>
-                </div>
-                <div class="review">
-                    <p class="review-text">"Макс — лучший! Каждый концерт лучше предыдущего, жду следующего тура!"</p>
-                    <p class="review-author">— Paweł, Вроцлав</p>
-                </div>
-                <div class="review">
-                    <p class="review-text">"Была с друзьями, до сих пор под впечатлением! Макс, спасибо за такую энергию!"</p>
-                    <p class="review-author">— Anna, Гданьск</p>
+    <!-- Modal Form -->
+    <div id="rentalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h3 class="text-2xl font-semibold mb-6">Book Your Vehicle</h3>
+            <div class="mb-6">
+                <img id="modalImage" src="" alt="Selected Car" class="w-full h-32 object-cover rounded-lg mb-2">
+                <p id="selectedCar" class="text-xl font-semibold text-gray-900"></p>
+                <p id="selectedPrice" class="text-gray-500 text-sm"></p>
+                <p id="selectedDetails" class="text-gray-500 text-sm"></p>
+            </div>
+            <div class="space-y-4">
+                <select id="transactionType" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                    <option value="rent">Rent</option>
+                    <option value="buy">Buy</option>
+                </select>
+                <input id="name" type="text" placeholder="Full Name" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                <input id="rentalDate" type="date" placeholder="Rental/Purchase Date" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                <input id="phone" type="tel" placeholder="Phone Number" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600">
+                <p class="text-sm text-gray-500 italic">Please provide a phone number registered with WhatsApp.</p>
+                <div class="flex justify-end space-x-4">
+                    <button onclick="closeModal()" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                    <button onclick="submitForm()" class="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">Submit</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Концерт Макса Коржа в Катовице</p>
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl overflow-x-auto">
+            <h3 class="text-2xl font-semibold mb-6">Compare Vehicles</h3>
+            <table class="w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Vehicle</th>
+                        <th class="px-4 py-2">Image</th>
+                        <th class="px-4 py-2">Year</th>
+                        <th class="px-4 py-2">Transmission</th>
+                        <th class="px-4 py-2">Fuel</th>
+                        <th class="px-4 py-2">Horsepower</th>
+                        <th class="px-4 py-2">Type</th>
+                        <th class="px-4 py-2">Mileage</th>
+                        <th class="px-4 py-2">Rent Price</th>
+                        <th class="px-4 py-2">Buy Price</th>
+                    </tr>
+                </thead>
+                <tbody id="comparisonTable"></tbody>
+            </table>
+            <div class="flex justify-end mt-6">
+                <button onclick="closeComparisonModal()" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">EULUX</h4>
+                    <p class="text-gray-400">Premium car rental and sales across Europe.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Terms & Conditions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <p class="text-gray-400">Email: support@eulux.com</p>
+                    <p class="text-gray-400">Phone: +123-456-7890</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-blue-400">Facebook</a>
+                        <a href="#" class="text-gray-400 hover:text-blue-400">Twitter</a>
+                        <a href="#" class="text-gray-400 hover:text-blue-400">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Car models by brand
+        const carModels = {
+            BMW: ['3 Series E21', '3 Series E30', '3 Series E36', '3 Series E46', '3 Series E90', '3 Series F30', '3 Series G20', 'X3', 'M3'],
+            Audi: ['A4', 'Q5'],
+            Mercedes: ['C-Class', 'GLC'],
+            Volkswagen: ['Golf'],
+            Toyota: ['Corolla'],
+            Porsche: ['911'],
+            Renault: ['Captur'],
+            Peugeot: ['208', '308', '3008', '5008', 'e-2008'],
+            Ford: ['Fiesta', 'Focus', 'Kuga', 'Mustang', 'Explorer'],
+            Tesla: ['Model S', 'Model 3', 'Model X', 'Model Y']
+        };
+
+        // Update model dropdown based on selected brand
+        function updateModels() {
+            const brand = document.getElementById('brand').value;
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = '<option value="">Select Model</option>';
+            
+            if (brand && carModels[brand]) {
+                carModels[brand].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Toggle price display based on transaction type
+        document.getElementById('transaction').addEventListener('change', function() {
+            const transaction = this.value;
+            const rentPrices = document.querySelectorAll('.rent-price');
+            const buyPrices = document.querySelectorAll('.buy-price');
+            rentPrices.forEach(price => price.classList.toggle('hidden', transaction === 'buy'));
+            buyPrices.forEach(price => price.classList.toggle('hidden', transaction === 'rent'));
+        });
+
+        // Update price range display
+        document.getElementById('priceRange').addEventListener('input', function() {
+            const maxPrice = this.value;
+            document.getElementById('priceRangeValue').textContent = `Price Range: €0 - €${maxPrice}/day`;
+        });
+
+        // Language switcher
+        function switchLanguage(lang) {
+            const currentLang = document.getElementById('currentLang');
+            currentLang.textContent = lang === 'en' ? 'EN' : 'RU';
+            document.getElementById('languageBtn').classList.add('text-blue-700');
+
+            // Update UI text
+            if (lang === 'ru') {
+                document.querySelector('h1').textContent = 'Арендуйте или купите идеальный автомобиль';
+                document.querySelector('#carListings').previousElementSibling.textContent = 'Доступные автомобили';
+                document.querySelector('.sticky-search h2').textContent = 'Поиск автомобилей';
+                document.querySelectorAll('nav ul li a')[0].textContent = 'Главная';
+                document.querySelectorAll('nav ul li a')[1].textContent = 'Автомобили';
+                document.querySelectorAll('nav ul li a')[2].textContent = 'Локации';
+                document.querySelectorAll('nav ul li a')[3].textContent = 'Контакты';
+                document.querySelector('#rentalModal h3').textContent = 'Забронировать/Купить автомобиль';
+                document.querySelector('#rentalModal button:last-child').textContent = 'Отправить';
+                document.querySelector('#comparisonModal h3').textContent = 'Сравнить автомобили';
+                document.querySelector('#transaction option[value="rent"]').textContent = 'Аренда';
+                document.querySelector('#transaction option[value="buy"]').textContent = 'Покупка';
+                document.querySelector('#transactionType option[value="rent"]').textContent = 'Аренда';
+                document.querySelector('#transactionType option[value="buy"]').textContent = 'Покупка';
+                document.querySelector('#noResults').textContent = 'Нет автомобилей, соответствующих вашим критериям.';
+                document.querySelector('#compareButton').textContent = 'Сравнить выбранные (0)';
+                document.querySelector('.sticky-search button:last-child').textContent = 'Сбросить';
+                document.querySelector('#sortBy option[value="price-asc"]').textContent = 'Цена: от низкой к высокой';
+                document.querySelector('#sortBy option[value="price-desc"]').textContent = 'Цена: от высокой к низкой';
+                document.querySelector('#sortBy option[value="year-desc"]').textContent = 'Год: новейшие';
+            } else {
+                document.querySelector('h1').textContent = 'Rent or Buy Your Perfect Car';
+                document.querySelector('#carListings').previousElementSibling.textContent = 'Available Vehicles';
+                document.querySelector('.sticky-search h2').textContent = 'Search Vehicles';
+                document.querySelectorAll('nav ul li a')[0].textContent = 'Home';
+                document.querySelectorAll('nav ul li a')[1].textContent = 'Cars';
+                document.querySelectorAll('nav ul li a')[2].textContent = 'Locations';
+                document.querySelectorAll('nav ul li a')[3].textContent = 'Contact';
+                document.querySelector('#rentalModal h3').textContent = 'Book Your Vehicle';
+                document.querySelector('#rentalModal button:last-child').textContent = 'Submit';
+                document.querySelector('#comparisonModal h3').textContent = 'Compare Vehicles';
+                document.querySelector('#transaction option[value="rent"]').textContent = 'Rent';
+                document.querySelector('#transaction option[value="buy"]').textContent = 'Buy';
+                document.querySelector('#transactionType option[value="rent"]').textContent = 'Rent';
+                document.querySelector('#transactionType option[value="buy"]').textContent = 'Buy';
+                document.querySelector('#noResults').textContent = 'No vehicles match your criteria.';
+                document.querySelector('#compareButton').textContent = 'Compare Selected (0)';
+                document.querySelector('.sticky-search button:last-child').textContent = 'Reset';
+                document.querySelector('#sortBy option[value="price-asc"]').textContent = 'Price: Low to High';
+                document.querySelector('#sortBy option[value="price-desc"]').textContent = 'Price: High to Low';
+                document.querySelector('#sortBy option[value="year-desc"]').textContent = 'Year: Newest';
+            }
+        }
+
+        // Modal functions
+        function openModal(car, rentPrice, buyPrice, image, details) {
+            const transaction = document.getElementById('transaction').value;
+            document.getElementById('modalImage').src = image;
+            document.getElementById('selectedCar').textContent = car;
+            document.getElementById('selectedPrice').textContent = transaction === 'rent' ? `€${rentPrice}/day (incl. 19% VAT)` : `€${buyPrice} (incl. 19% VAT)`;
+            document.getElementById('selectedDetails').textContent = details;
+            document.getElementById('transactionType').value = transaction;
+            document.getElementById('rentalModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('rentalModal').classList.add('hidden');
+            document.getElementById('name').value = '';
+            document.getElementById('rentalDate').value = '';
+            document.getElementById('phone').value = '';
+        }
+
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const rentalDate = document.getElementById('rentalDate').value;
+            const phone = document.getElementById('phone').value;
+            const transactionType = document.getElementById('transactionType').value;
+            if (name && rentalDate && phone) {
+                alert(`${transactionType === 'rent' ? 'Rental' : 'Purchase'} submitted successfully!`);
+                closeModal();
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        // Comparison functions
+        function updateCompareButton() {
+            const checkboxes = document.querySelectorAll('.compare-checkbox:checked');
+            const compareButton = document.getElementById('compareButton');
+            compareButton.textContent = `Compare Selected (${checkboxes.length})`;
+            compareButton.classList.toggle('hidden', checkboxes.length === 0);
+            if (checkboxes.length > 3) {
+                alert('You can compare up to 3 vehicles.');
+                this.checked = false;
+                updateCompareButton();
+            }
+        }
+
+        function openComparisonModal() {
+            const checkboxes = document.querySelectorAll('.compare-checkbox:checked');
+            const comparisonTable = document.getElementById('comparisonTable');
+            comparisonTable.innerHTML = '';
+            checkboxes.forEach(checkbox => {
+                const carCard = checkbox.closest('.car-card');
+                const car = carCard.dataset;
+                const details = carCard.querySelector('p.text-gray-500').textContent;
+                const image = carCard.querySelector('img').src;
+                const row = `
+                    <tr>
+                        <td class="px-4 py-2">${car.model}</td>
+                        <td class="px-4 py-2"><img src="${image}" alt="${car.model}" class="w-24 h-16 object-cover rounded"></td>
+                        <td class="px-4 py-2">${car.year}</td>
+                        <td class="px-4 py-2">${details.split(' | ')[1]}</td>
+                        <td class="px-4 py-2">${car.fuel}</td>
+                        <td class="px-4 py-2">${details.split(' | ')[2]}</td>
+                        <td class="px-4 py-2">${car.vehicleType}</td>
+                        <td class="px-4 py-2">${details.split(' | ')[4]}</td>
+                        <td class="px-4 py-2">€${car.rentPrice}/day</td>
+                        <td class="px-4 py-2">€${car.buyPrice}</td>
+                    </tr>
+                `;
+                comparisonTable.innerHTML += row;
+            });
+            document.getElementById('comparisonModal').classList.remove('hidden');
+        }
+
+        function closeComparisonModal() {
+            document.getElementById('comparisonModal').classList.add('hidden');
+        }
+
+        // Carousel functions
+        let carouselIndex = 0;
+        function moveCarousel(direction) {
+            const carouselInner = document.getElementById('carouselInner');
+            const items = carouselInner.querySelectorAll('.carousel-item');
+            carouselIndex = (carouselIndex + direction + items.length) % items.length;
+            carouselInner.style.transform = `translateX(-${carouselIndex * 100}%)`;
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('transaction').value = 'rent';
+            document.getElementById('brand').value = '';
+            document.getElementById('model').innerHTML = '<option value="">Select Model</option>';
+            document.getElementById('vehicleType').value = '';
+            document.getElementById('fuel').value = '';
+            document.getElementById('priceRange').value = 200;
+            document.getElementById('sortBy').value = 'price-asc';
+            document.getElementById('priceRangeValue').textContent = 'Price Range: €0 - €200/day';
+            searchCars();
+        }
+
+        // Search functionality
+        function searchCars() {
+            const transaction = document.getElementById('transaction').value;
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const vehicleType = document.getElementById('vehicleType').value;
+            const fuel = document.getElementById('fuel').value;
+            const maxPrice = parseFloat(document.getElementById('priceRange').value);
+            const sortBy = document.getElementById('sortBy').value;
+            const carListings = document.getElementById('carListings');
+            const loading = document.getElementById('loading');
+            const noResults = document.getElementById('noResults');
+            const cars = Array.from(document.querySelectorAll('.car-card'));
+
+            // Show loading state
+            loading.style.display = 'block';
+            carListings.style.display = 'none';
+            noResults.style.display = 'none';
+
+            setTimeout(() => {
+                let filteredCars = cars.filter(car => {
+                    const carBrand = car.dataset.brand;
+                    const carModel = car.dataset.model;
+                    const carVehicleType = car.dataset.vehicleType;
+                    const carFuel = car.dataset.fuel;
+                    const carRentPrice = parseFloat(car.dataset.rentPrice);
+                    const carBuyPrice = parseFloat(car.dataset.buyPrice);
+                    const priceToCheck = transaction === 'rent' ? carRentPrice : carBuyPrice;
+
+                    const matchesBrand = !brand || carBrand === brand;
+                    const matchesModel = !model || carModel === model || (brand === 'BMW' && !model && carBrand === 'BMW');
+                    const matchesVehicleType = !vehicleType || carVehicleType === vehicleType;
+                    const matchesFuel = !fuel || carFuel === fuel;
+                    const matchesPrice = priceToCheck <= maxPrice;
+
+                    return matchesBrand && matchesModel && matchesVehicleType && matchesFuel && matchesPrice;
+                });
+
+                // Sort results
+                filteredCars.sort((a, b) => {
+                    const aPrice = transaction === 'rent' ? parseFloat(a.dataset.rentPrice) : parseFloat(a.dataset.buyPrice);
+                    const bPrice = transaction === 'rent' ? parseFloat(b.dataset.rentPrice) : parseFloat(b.dataset.buyPrice);
+                    const aYear = parseInt(a.dataset.year);
+                    const bYear = parseInt(b.dataset.year);
+
+                    if (sortBy === 'price-asc') return aPrice - bPrice;
+                    if (sortBy === 'price-desc') return bPrice - aPrice;
+                    if (sortBy === 'year-desc') return bYear - aYear;
+                    return 0;
+                });
+
+                // Display results
+                cars.forEach(car => car.style.display = 'none');
+                filteredCars.forEach(car => car.style.display = 'block');
+
+                // Hide loading and show results or no results message
+                loading.style.display = 'none';
+                carListings.style.display = 'block';
+                noResults.style.display = filteredCars.length > 0 ? 'none' : 'block';
+            }, 500); // Simulate network delay
+        }
+    </script>
 </body>
 </html>
